@@ -6,22 +6,26 @@ import code.eris.abshell.Shell;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class CommandExpression implements ExecutableExpression {
     public CommandExpression() {
         this("", new ArrayList<>());
     }
     
-    public CommandExpression(String commandName, List<String> args) {
+    public CommandExpression(String commandName, List<ValueExpression> args) {
         this.commandName = commandName;
         this.args = args;
     }
 
     @Override
     public int execute(Shell shell, ExecutionEnvironment environment) {
-        ProcessBuilder pb = new ProcessBuilder();
-        populateCommandList(pb.command());
-        
+        ProcessBuilder pb = new ProcessBuilder(new ArrayList<>());
+
+        Stream<String> args = evaluateArguments(shell, environment);
+        pb.command().add(commandName);
+        pb.command().addAll(args.toList());
+
         environment.configureProcessBuilder(pb);
         
         try {
@@ -38,24 +42,18 @@ public class CommandExpression implements ExecutableExpression {
         return commandName;
     }
 
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
-    }
-
-    private void populateCommandList(List<String> list) {
-        list.add(commandName);
-        list.addAll(args);
-    }
-
-    public List<String> getArgs() {
+    public List<ValueExpression> getArgs() {
         return args;
     }
 
-    public void setArgs(List<String> args) {
-        this.args = args;
+    private Stream<String> evaluateArguments(Shell shell, ExecutionEnvironment environment) {
+        return args
+                .stream()
+                .map(a -> a.evaluate(shell, environment))
+                .map(Object::toString);
     }
 
-    private List<String> args;
+    private final List<ValueExpression> args;
 
-    private String commandName;
+    private final String commandName;
 }

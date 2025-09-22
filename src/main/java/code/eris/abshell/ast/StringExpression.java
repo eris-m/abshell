@@ -4,10 +4,19 @@
  */
 package code.eris.abshell.ast;
 
-/**
- *
- * @author eris
- */
-public class StringExpression implements Expression {
-    
+import code.eris.abshell.ExecutionEnvironment;
+import code.eris.abshell.Shell;
+
+public class StringExpression implements ValueExpression {
+    @Override
+    public Object evaluate(Shell shell, ExecutionEnvironment environment) {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    private String value;
 }
