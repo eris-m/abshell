@@ -1,13 +1,15 @@
-package code.eris.abshell;
+package code.eris.abshell.ast;
+
+import code.eris.abshell.ExecutionEnvironment;
+import code.eris.abshell.Shell;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandExpression implements Expression {
+public class CommandExpression implements ExecutableExpression {
     public CommandExpression() {
-        commandName = "";
-        args = new ArrayList<>();
+        this("", new ArrayList<>());
     }
     
     public CommandExpression(String commandName, List<String> args) {
@@ -40,6 +42,11 @@ public class CommandExpression implements Expression {
         this.commandName = commandName;
     }
 
+    private void populateCommandList(List<String> list) {
+        list.add(commandName);
+        list.addAll(args);
+    }
+
     public List<String> getArgs() {
         return args;
     }
@@ -47,12 +54,8 @@ public class CommandExpression implements Expression {
     public void setArgs(List<String> args) {
         this.args = args;
     }
-    
-    private void populateCommandList(List<String> list) {
-        list.add(commandName);
-        list.addAll(args);
-    }
-    
-    private String commandName;
+
     private List<String> args;
+
+    private String commandName;
 }

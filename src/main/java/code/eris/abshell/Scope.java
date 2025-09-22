@@ -31,7 +31,7 @@ public class Scope {
     
     /**
      * Gets the parent scope of this scope.
-     * @return Parent scope, {@code null} if {@link isRoot} is {@code true}
+     * @return Parent scope, {@code null} if {@link #isRoot} is {@code true}
      */
     public Scope getParent() {
         return parent;
