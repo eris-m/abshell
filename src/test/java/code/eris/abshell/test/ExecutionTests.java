@@ -2,16 +2,14 @@ package code.eris.abshell.test;
 
 import code.eris.abshell.mock.ExpectingProcessCreator;
 import code.eris.abshell.mock.MockShell;
-import code.eris.abshell.ProcessCreator;
 import code.eris.abshell.Shell;
 import code.eris.abshell.ast.CommandExpression;
 import code.eris.abshell.ast.ExecutableExpression;
-import code.eris.abshell.ast.StringExpression;
+import code.eris.abshell.ast.ObjectExpression;
 import code.eris.abshell.ast.ValueExpression;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  *
@@ -37,7 +35,7 @@ public class ExecutionTests {
         List<String> argsStrings = List.of("Hello!");
         List<ValueExpression> argsExprs = argsStrings
                 .stream()
-                .map(s -> (ValueExpression)new StringExpression(s))
+                .map(s -> (ValueExpression)new ObjectExpression(s))
                 .toList();
         
         
@@ -63,7 +61,7 @@ public class ExecutionTests {
                 .toList();
         List<ValueExpression> varValuesExpr = varValuesStr
                 .stream()
-                .map(v -> (ValueExpression)new StringExpression(v))
+                .map(v -> (ValueExpression)new ObjectExpression(v))
                 .toList();
 
         Shell shell = new MockShell(new ExpectingProcessCreator(cmd, varValuesStr));
