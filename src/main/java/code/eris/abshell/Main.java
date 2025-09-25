@@ -12,11 +12,10 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Shell shell = new Shell();
-        ExecutionEnvironment env = new ExecutionEnvironment();
 
         int retCode = getExpressions()
                 .stream()
-                .map(e -> e.execute(shell, env))
+                .map(e -> e.execute(shell))
                 .reduce((a, b) -> a + b)
                 .orElse(0);
         

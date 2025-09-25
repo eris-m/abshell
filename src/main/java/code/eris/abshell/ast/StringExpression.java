@@ -4,12 +4,15 @@
  */
 package code.eris.abshell.ast;
 
-import code.eris.abshell.ExecutionEnvironment;
 import code.eris.abshell.Shell;
 
 public class StringExpression implements ValueExpression {
+    public StringExpression(String value) {
+        this.value = value;
+    }
+    
     @Override
-    public Object evaluate(Shell shell, ExecutionEnvironment environment) {
+    public Object evaluate(Shell shell) {
         return value;
     }
 

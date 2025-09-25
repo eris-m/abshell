@@ -1,9 +1,9 @@
 package code.eris.abshell.ast;
 
-import code.eris.abshell.ExecutionEnvironment;
+import code.eris.abshell.ProcessCreator;
 import code.eris.abshell.Shell;
-
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,19 +19,16 @@ public class CommandExpression implements ExecutableExpression {
     }
 
     @Override
-    public int execute(Shell shell, ExecutionEnvironment environment) {
-        ProcessBuilder pb = new ProcessBuilder(new ArrayList<>());
+    public int execute(Shell shell) {
+        ProcessCreator pc = shell.getProcessBuilder();
+        pc.withCommand(commandName);
 
-        Stream<String> args = evaluateArguments(shell, environment);
-        pb.command().add(commandName);
-        pb.command().addAll(args.toList());
+        Stream<String> args = evaluateArguments(shell);
+        pc.withArgs(args.toList());
 
-        environment.configureProcessBuilder(pb);
-        
         try {
-            Process proc = pb.start();
-            proc.waitFor();
-            return proc.exitValue();
+            Process process = pc.start();
+            return process.waitFor();
         } catch (IOException | InterruptedException ex) {
             System.err.println(ex.getLocalizedMessage());
             return -1;
@@ -46,10 +43,10 @@ public class CommandExpression implements ExecutableExpression {
         return args;
     }
 
-    private Stream<String> evaluateArguments(Shell shell, ExecutionEnvironment environment) {
+    private Stream<String> evaluateArguments(Shell shell) {
         return args
                 .stream()
-                .map(a -> a.evaluate(shell, environment))
+                .map(a -> a.evaluate(shell))
                 .map(Object::toString);
     }
 

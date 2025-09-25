@@ -1,6 +1,5 @@
 package code.eris.abshell.ast;
 
-import code.eris.abshell.ExecutionEnvironment;
 import code.eris.abshell.Shell;
 
 public class ObjectExpression implements ValueExpression {
@@ -9,7 +8,7 @@ public class ObjectExpression implements ValueExpression {
     }
     
     @Override
-    public Object evaluate(Shell shell, ExecutionEnvironment environment) {
+    public Object evaluate(Shell shell) {
         return object;
     }
     

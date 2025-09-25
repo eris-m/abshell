@@ -1,6 +1,5 @@
 package code.eris.abshell.ast;
 
-import code.eris.abshell.ExecutionEnvironment;
 import code.eris.abshell.Shell;
 
 /**
@@ -13,8 +12,8 @@ public class VariableAssignmentExpression implements ExecutableExpression {
     }
 
     @Override
-    public int execute(Shell shell, ExecutionEnvironment environment) {
-        Object value = to.evaluate(shell, environment);
+    public int execute(Shell shell) {
+        Object value = to.evaluate(shell);
 
         shell.getScope().setVariable(name, value);
 
