@@ -25,7 +25,7 @@ public class Scope {
         vars.remove(name);
     }
     
-    public Scope createChildScope() {
+    Scope createChildScope() {
         return new Scope(this);
     }
     
