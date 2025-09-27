@@ -7,9 +7,13 @@ import code.eris.abshell.ast.CommandExpression;
 import code.eris.abshell.ast.ExecutableExpression;
 import code.eris.abshell.ast.ObjectExpression;
 import code.eris.abshell.ast.ValueExpression;
+import code.eris.abshell.mock.TestCommandlet;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -75,6 +79,18 @@ public class ExecutionTests {
 
         ExpectingProcessCreator pc = (ExpectingProcessCreator)shell.getProcessBuilder();
         pc.assertCorrect();
+    }
+
+    @Test
+    void testCommandlet() {
+        String name = "testCommandlet";
+        ExecutableExpression ex = new CommandExpression(name, List.of());
+
+        Shell sh = new Shell();
+        int i = ex.execute(sh);
+
+        assertEquals(0, i);
+        assertTrue(TestCommandlet.hasExecuted);
     }
 }
 

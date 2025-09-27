@@ -1,11 +1,13 @@
 package code.eris.abshell;
 
+import code.eris.abshell.commandlets.CommandletDiscoverer;
+import code.eris.abshell.commandlets.CommandletService;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Shell {
-    private class DefaultProcessCreator implements ProcessCreator {
+    private static class DefaultProcessCreator implements ProcessCreator {
         @Override
         public ProcessCreator withCommand(String command) {
             if (processBuilder.command().isEmpty()) 
@@ -54,12 +56,43 @@ public class Shell {
 
         private final ProcessBuilder processBuilder = new ProcessBuilder(new ArrayList<>());
     }
-    
+
+    private class DefaultCommandletDiscoverer implements CommandletDiscoverer {
+        public DefaultCommandletDiscoverer() {
+            serviceLoader = ServiceLoader.load(CommandletService.class);
+        }
+
+        @Override
+        public void reload() {
+            serviceLoader.reload();
+            populateCommandlets();
+        }
+
+        @Override
+        public Iterator<CommandletService> getCommandlets() {
+            return serviceLoader.iterator();
+        }
+
+        private final ServiceLoader<CommandletService> serviceLoader;
+    }
+
+    public Shell() {
+        populateCommandlets();
+    }
+
     /**
      * @return A new process creator that the shell should use for creating processes.
      */
     public ProcessCreator getProcessBuilder() {
         return new DefaultProcessCreator();
+    }
+
+    protected CommandletDiscoverer getCommandletDiscoverer() {
+        return new DefaultCommandletDiscoverer();
+    }
+
+    public HashMap<String, CommandletService> getCommandlets() {
+        return commandlets;
     }
     
     public void enterScope() {
@@ -77,6 +110,16 @@ public class Shell {
     public Scope getScope() {
         return scope;
     }
-    
+
+    protected void populateCommandlets() {
+        commandlets.clear();
+
+        CommandletDiscoverer discoverer = getCommandletDiscoverer();
+        Iterator<CommandletService> commandletsIter = discoverer.getCommandlets();
+
+        commandletsIter.forEachRemaining(c -> commandlets.put(c.getName(), c));
+    }
+
+    private final HashMap<String, CommandletService> commandlets = new HashMap<>();
     private Scope scope = new Scope();
 }
